@@ -1,0 +1,9 @@
+.header{
+    display: flex;
+    justify-content: flex-end;
+    border-bottom: 1px solid #f9f9f9;
+}
+
+.header_icon{
+    padding: 20px ;
+}
