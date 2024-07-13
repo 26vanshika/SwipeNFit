@@ -4,9 +4,9 @@ import csv
 
 app = Flask(__name__)
 
-CSV_FILE = '/Users/vanshya/Desktop/myntra/SwipeNFit/database/Fashion Dataset v2.csv'
+CSV_FILE = 'Fashion Dataset v2.csv'
 
-DATASTORINGCSVFILE = '/Users/vanshya/Desktop/myntra/SwipeNFit/storage/storing.csv'
+DATASTORINGCSVFILE = 'storing.csv'
 
 user_swipe_counts = {}
 
