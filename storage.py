@@ -42,14 +42,30 @@ def record_swipe():
                 writer.writeheader()
 
             writer.writerow({'user_id':user_id, 'action': action, 'outfit_id': outfit_id})
+
+        if user_id not in user_swipe_counts:
+            user_swipe_counts[user_id] = {'left':0}
+
+        if action == 'left':
+            user_swipe_counts[user_id]['left'] += 1
+        else:
+            user_swipe_counts[user_id]['left'] = 0
         
 
         if action == 'left' and user_swipe_counts[user_id]['left'] >= 5:
             most_rated_outfit = get_most_rated_outfit()
             user_swipe_counts[user_id]['left'] = 0
+            return jsonify({"message": "Swipe recorded successfully",
+                            "most_rated_outfit}), 200
+
+        else
+                            return jsonify({"message": "Swipe recorded successfully"}), 200
+                            
+
+        
         
 
-        return jsonify({"message": "Swipe recorded successfully"}), 200
+        
     
     else:
         return jsonify({"error": "Missing required parameters"}), 400
