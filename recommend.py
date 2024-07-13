@@ -1,12 +1,14 @@
 import pickle
 import numpy as np
+import pandas as pd
 
 # Load the features and filenames
 feature_list = pickle.load(open('embeddings.pkl', 'rb'))
 filenames = pickle.load(open('filenames.pkl', 'rb'))
 
-#feature_list = [feature for feature in feature_list if feature is not None]
-#filenames = [filenames[i] for i in range(len(filenames)) if feature_list[i] is not None]
+# Load the CSV file containing the images to be excluded
+storage_csv_path = 'storing.csv' 
+excluded_images = pd.read_csv(storage_csv_path)['filename'].tolist()
 
 # Function to compute cosine similarity
 def compute_similarity(query_features, features):
@@ -14,7 +16,7 @@ def compute_similarity(query_features, features):
     return similarity
 
 # Function to find top N similar images
-def find_similar_images(query_image_filename, feature_list, filenames, top_n=5):
+def find_similar_images(query_image_filename, feature_list, filenames, excluded_images, top_n=5):
     query_index = filenames.index(query_image_filename)
     
     # Get the features of the query image
@@ -29,17 +31,22 @@ def find_similar_images(query_image_filename, feature_list, filenames, top_n=5):
     # Sort by similarity (descending order)
     sorted_indices = np.argsort(similarities)[::-1]
     
-    # Get the top N similar images
+    # Get the top N similar images, excluding those that are swiped
     top_n_images = []
-    for i in range(1, top_n + 1):  # Start from 1 to exclude the query image itself
+    count = 0
+    for i in range(1, len(sorted_indices)):
+        if count >= top_n:
+            break
         idx = sorted_indices[i]
-        top_n_images.append(filenames[idx])
+        if filenames[idx] not in excluded_images:
+            top_n_images.append(filenames[idx])
+            count += 1
     
     return top_n_images
 
 # Example usage:
 query_image_filename = '2322792.jpg'
-recommended_images = find_similar_images(query_image_filename, feature_list, filenames, top_n=5)
+recommended_images = find_similar_images(query_image_filename, feature_list, filenames, excluded_images, top_n=5)
 
 # Can put in a list or something
 print(f"Top {len(recommended_images)} recommended images:")
