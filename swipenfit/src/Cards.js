@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
-import TinderCard from "react-tinder-card";
+import React, { useState, useEffect, useRef } from "react";
 import Papa from "papaparse";
 import "./Cards.css";
 
 function TinderCards() {
   const [products, setProducts] = useState([]);
-  const csvFilePath = `${process.env.PUBLIC_URL}/Fashion Dataset v2.csv`; // Reference to the CSV file
+  const csvFilePath = `${process.env.PUBLIC_URL}/Fashion Dataset v2.csv`;
+  const cardRefs = useRef([]);
 
   useEffect(() => {
     async function fetchData() {
@@ -25,34 +25,95 @@ function TinderCards() {
     }
 
     fetchData();
-  }, [csvFilePath]); // Add csvFilePath to the dependency array
+  }, [csvFilePath]);
 
-  const swiped = (direction, nameToDelete) => {
-    console.log("removing: " + nameToDelete);
+  const handleMove = (card, x, y) => {
+    const offsetX = x - card.startX;
+    const offsetY = y - card.startY;
+    const rotate = offsetX * 0.1;
+    card.style.transform = `translate(${offsetX}px, ${offsetY}px) rotate(${rotate}deg)`;
+
+    if (Math.abs(offsetX) > card.clientWidth * 0.7) {
+      card.dismiss(offsetX > 0 ? 1 : -1);
+    }
   };
 
-  const outOfFrame = (name) => {
-    console.log(name + " left the screen");
+  const handleMouseMove = (card, e) => {
+    e.preventDefault();
+    if (!card.startX) return;
+    handleMove(card, e.clientX, e.clientY);
   };
+
+  const handleTouchMove = (card, e) => {
+    if (!card.startX) return;
+    const touch = e.changedTouches[0];
+    if (!touch) return;
+    handleMove(card, touch.clientX, touch.clientY);
+  };
+
+  const handleEnd = (card) => {
+    card.startX = null;
+    document.removeEventListener('mousemove', card.mouseMoveHandler);
+    document.removeEventListener('touchmove', card.touchMoveHandler);
+    card.style.transform = '';
+  };
+
+  const dismiss = (card, direction) => {
+    card.startX = null;
+    document.removeEventListener('mousemove', card.mouseMoveHandler);
+    document.removeEventListener('touchmove', card.touchMoveHandler);
+    card.style.transition = 'transform 1s';
+    card.style.transform = `translate(${direction * window.innerWidth}px, ${card.offsetY}px) rotate(${90 * direction}deg)`;
+    card.classList.add('dismissing');
+    setTimeout(() => {
+      card.remove();
+    }, 1000);
+  };
+
+  useEffect(() => {
+    const cards = cardRefs.current;
+    cards.forEach((card, index) => {
+      card.startX = null;
+
+      const handleMouseDown = (e) => {
+        card.startX = e.clientX;
+        card.startY = e.clientY;
+        card.mouseMoveHandler = (e) => handleMouseMove(card, e);
+        document.addEventListener('mousemove', card.mouseMoveHandler);
+        card.style.transition = 'transform 0s';
+      };
+
+      const handleTouchStart = (e) => {
+        const touch = e.changedTouches[0];
+        if (!touch) return;
+        card.startX = touch.clientX;
+        card.startY = touch.clientY;
+        card.touchMoveHandler = (e) => handleTouchMove(card, e);
+        document.addEventListener('touchmove', card.touchMoveHandler);
+        card.style.transition = 'transform 0s';
+      };
+
+      card.addEventListener('mousedown', handleMouseDown);
+      card.addEventListener('touchstart', handleTouchStart);
+      document.addEventListener('mouseup', () => handleEnd(card));
+      document.addEventListener('touchend', () => handleEnd(card));
+
+      card.dismiss = (direction) => dismiss(card, direction);
+    });
+  }, [products]);
 
   return (
     <div className="tinderCards">
       <div className="tinderCards__cardContainer">
         {products.map((product, index) => (
-          <TinderCard
-            className="swipe"
-            key={product.p_id || index} // Use index as a fallback if p_id is not unique or undefined
-            preventSwipe={["up", "down"]}
-            onSwipe={(dir) => swiped(dir, product.name)}
-            onCardLeftScreen={() => outOfFrame(product.name)}
+          <div
+            className="card"
+            key={product.p_id || index}
+            ref={(el) => (cardRefs.current[index] = el)}
           >
-            <div
-              style={{ backgroundImage: `url(${product.img})` }}
-              className="card"
-            >
-              <h3>{product.name}</h3>
-            </div>
-          </TinderCard>
+            <img src={product.img} alt={product.name} />
+            <h3>{product.name}</h3>
+          </div>
         ))}
       </div>
     </div>
