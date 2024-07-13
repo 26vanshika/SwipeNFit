@@ -15,7 +15,6 @@ def compute_similarity(query_features, features):
 
 # Function to find top N similar images
 def find_similar_images(query_image_filename, feature_list, filenames, top_n=5):
-    # Find the index of the query image
     query_index = filenames.index(query_image_filename)
     
     # Get the features of the query image
@@ -39,10 +38,10 @@ def find_similar_images(query_image_filename, feature_list, filenames, top_n=5):
     return top_n_images
 
 # Example usage:
-query_image_filename = '2322792.jpg'  # Replace with the actual filename of the query image
+query_image_filename = '2322792.jpg'
 recommended_images = find_similar_images(query_image_filename, feature_list, filenames, top_n=5)
 
-# Print the results
+# Can put in a list or something
 print(f"Top {len(recommended_images)} recommended images:")
 for img in recommended_images:
     print("Filename:", img)
