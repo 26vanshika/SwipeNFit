@@ -21,7 +21,7 @@ def get_most_rated_outfit():
             if avg_rating > highest_rating: 
                 highest_rating = avg_rating
                 highest_rated_outfit = row 
-                return highest_rated_outfit1
+                return highest_rated_outfit
 
 
 
