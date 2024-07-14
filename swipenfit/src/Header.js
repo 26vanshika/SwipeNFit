@@ -9,9 +9,9 @@ function Header(){
         //BEM
         <div className="header">
             {/* <h2>I am a header</h2> */}
-            <IconButton>
+            {/* <IconButton>
             <ShoppingCartIcon className='header_icon' fontSize='large' />
-            </IconButton>
+            </IconButton> */}
             
             
         </div>
