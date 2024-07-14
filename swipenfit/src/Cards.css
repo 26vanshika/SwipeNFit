@@ -50,6 +50,9 @@
     cursor: pointer;
     user-select: none;
     transition: transform 0.3s;
+    position: absolute;
+    top: 0;
+    left: 0;
 
   }
   
@@ -69,6 +72,7 @@
     text-align: center;
     object-fit: contain;
     position: absolute;
+    bottom: 0;
   }
   
   #like,
