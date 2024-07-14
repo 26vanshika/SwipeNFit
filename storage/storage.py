@@ -44,7 +44,7 @@ def record_swipe():
             if file.tell() == 0:
                 writer.writeheader()
 
-            writer.writerow({'user_id':user_id, 'action': action, 'outfit_id': outfit_id, 'category': outfit_category})
+            writer.writerow({'user_id':user_id, 'action': action, 'outfit_id': f'{outfit_id}.jpg', 'category': outfit_category})
 
         if user_id not in user_swipe_counts:
             user_swipe_counts[user_id] = {'left': 0}
