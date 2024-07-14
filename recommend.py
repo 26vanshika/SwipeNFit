@@ -48,7 +48,3 @@ def find_similar_images(query_image_filename, feature_list, filenames, excluded_
 query_image_filename = '2322792.jpg'
 recommended_images = find_similar_images(query_image_filename, feature_list, filenames, excluded_images, top_n=5)
 
-# Can put in a list or something
-print(f"Top {len(recommended_images)} recommended images:")
-for img in recommended_images:
-    print("Filename:", img)
