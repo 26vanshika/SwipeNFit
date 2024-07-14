@@ -8,7 +8,7 @@ filenames = pickle.load(open('filenames.pkl', 'rb'))
 
 # Load the CSV file containing the images to be excluded
 storage_csv_path = 'storing.csv' 
-excluded_images = pd.read_csv(storage_csv_path)['filename'].tolist()
+excluded_images = pd.read_csv(storage_csv_path, usecols=[2]).iloc[:, 0].tolist()
 
 # Function to compute cosine similarity
 def compute_similarity(query_features, features):
