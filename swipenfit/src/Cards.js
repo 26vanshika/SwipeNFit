@@ -4,6 +4,7 @@ import "./Cards.css";
 
 function TinderCards() {
   const [products, setProducts] = useState([]);
+  const [wishlistMessage, setWishlistMessage] = useState(null);
   const csvFilePath = `${process.env.PUBLIC_URL}/Fashion Dataset v2.csv`;
   const cardRefs = useRef([]);
 
@@ -33,7 +34,10 @@ function TinderCards() {
     const rotate = offsetX * 0.1;
     card.style.transform = `translate(${offsetX}px, ${offsetY}px) rotate(${rotate}deg)`;
 
-    if (Math.abs(offsetX) > card.clientWidth * 0.7) {
+    if (Math.abs(offsetY) > card.clientHeight * 0.7) {
+      // Consider it a swipe up if vertical displacement is greater than horizontal displacement
+      card.dismiss(2);
+    } else if (Math.abs(offsetX) > card.clientWidth * 0.7) {
       card.dismiss(offsetX > 0 ? 1 : -1);
     }
   };
@@ -63,7 +67,15 @@ function TinderCards() {
     document.removeEventListener('mousemove', card.mouseMoveHandler);
     document.removeEventListener('touchmove', card.touchMoveHandler);
     card.style.transition = 'transform 1s';
-    card.style.transform = `translate(${direction * window.innerWidth}px, ${card.offsetY}px) rotate(${90 * direction}deg)`;
+    
+    if (direction === 2) {
+      card.style.transform = `translate(0, -${window.innerHeight}px) rotate(0deg)`;
+      setWishlistMessage(`Item "${card.dataset.name}" added to wishlist!`);
+      setTimeout(() => setWishlistMessage(null), 2000); // Hide the message after 2 seconds
+    } else {
+      card.style.transform = `translate(${direction * window.innerWidth}px, ${card.offsetY}px) rotate(${90 * direction}deg)`;
+    }
+
     card.classList.add('dismissing');
     setTimeout(() => {
       card.remove();
@@ -110,15 +122,16 @@ function TinderCards() {
             className="card"
             key={product.p_id || index}
             ref={(el) => (cardRefs.current[index] = el)}
+            data-name={product.name} // Store product name in data attribute
           >
             <img src={product.img} alt={product.name} />
             <h3>{product.name}</h3>
           </div>
         ))}
       </div>
+      {wishlistMessage && <div className="wishlistMessage">{wishlistMessage}</div>}
     </div>
   );
 }
 
 export default TinderCards;
-
