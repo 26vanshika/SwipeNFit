@@ -5,7 +5,10 @@ import "./Cards.css";
 function TinderCards() {
   const [products, setProducts] = useState([]);
   const [wishlistMessage, setWishlistMessage] = useState(null);
-  const csvFilePath = `${process.env.PUBLIC_URL}/Fashion Dataset v2.csv`;
+  const [file, setFile] = useState(null);
+  const [resultImage, setResultImage] = useState(null);
+  const [swipeCounts, setSwipeCounts] = useState({});
+  const csvFilePath = `${process.env.PUBLIC_URL}/database/Fashion Dataset v2.csv`;
   const cardRefs = useRef([]);
 
   useEffect(() => {
@@ -27,6 +30,80 @@ function TinderCards() {
 
     fetchData();
   }, [csvFilePath]);
+
+  const handleFileChange = (e) => {
+    setFile(e.target.files[0]);
+  };
+
+  const handleTryOn = async (product) => {
+    const formData = new FormData();
+    formData.append('file' , file);
+    formData.append('outfitId' , product.p_id);
+    formData.append('category',product.products);
+
+    try{
+      const response = await axios.post('/api/try-on', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      setResultImage(response.data.resultImage);
+    } catch (error){
+      console.error('Error uploading image', error);
+    }
+  };
+
+  const handleSwipe = async (product, action) => {
+    try{
+      const userId =
+      'example_user_id';
+      const response = await axios.post('/api/swipe', {
+        user_id: userId,
+        action: action,
+        outfit_id: product.p_id,
+        category: product.products
+      });
+      console.log(response.data);
+
+      setSwipeCounts(prevCounts => {
+        const newCounts = { ...prevCounts };
+        if (!newCounts[userId]) {
+          newCounts[userId] = {};
+        }
+        if(!newCounts[userId][product.products]){
+          newCounts[userId][product.products] = { left: 0};
+        }
+        if (action === 'left'){
+          newCounts[userId][product.products].left += 1;
+
+          if (newCounts[userId][product.products].left >= 5){
+            alert('You have swiped left 5 times on ${prodyct.products}. Showing highest rated ${product.products}.');
+
+            fetchHighestRated(product.products);
+
+            newCounts[userId][product.products].left = 0;
+
+
+                        
+          }
+        }else {
+          newCounts[userId][product.products].left = 0;
+        }
+        return newCounts;
+      });
+    }catch (error){
+      console.error('Error recording swipe: ', error);
+    }
+  };
+
+  const fetchHighestRated = async (category) => {
+    try {
+      const response = await axios.get('/api/highest-rated?category=${category}');
+      console.log(response.data);
+    } catch (error){
+      console.error('Error fetching highest rated product: ', error);
+    }
+  };
 
   const handleMove = (card, x, y) => {
     const offsetX = x - card.startX;
