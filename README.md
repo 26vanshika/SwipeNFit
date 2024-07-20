@@ -1,4 +1,4 @@
-# SwipeNFit 👗
+# <center> SwipeNFit 👗</center>
 <img width="1440" alt="Screenshot 2024-07-20 at 5 47 07 PM" src="https://github.com/user-attachments/assets/84bd4afe-e24c-4acb-a02c-c02e569bd046">
 
 # Inspiration ⚡
