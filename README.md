@@ -4,11 +4,6 @@
 # Inspiration ⚡
 In the dynamic world of fashion, consumer preferences are constantly evolving, making it essential to develop intuitive and engaging ways to help users discover styles they love. Fashion apps with right-swiping for likes and left-swiping for dislikes leverage this need by providing a seamless and interactive user experience. By analyzing user swipes, these apps can generate personalized recommendations that align with individual tastes, enhancing user satisfaction and engagement. This not only simplifies the decision-making process but also transforms fashion discovery into a fun and gamified activity. The integration of such advanced recommendation systems fosters a deeper connection between users and the app, driving higher retention rates and creating a loyal user base. In essence, swipe-based fashion apps are revolutionizing how we explore and adopt new styles, making fashion more accessible and enjoyable for everyone.
 
-# Team ✨
-- [@Vanshika Jain](https://github.com/26vanshika) 
-- [@Ananya Praharaj](https://github.com/ananyapraharaj) 
-- [@Sneha Smita Sahu](https://github.com/snehasmitasahu) 
-
 # What is it? ⛹️‍♂️
 Our project is an innovative fashion recommendation app, SwipeNFit, that combines the convenience of swipe-based browsing with personalized outfit suggestions. Users can swipe left, right, or up on outfit cards to indicate their preferences, and the system records these interactions to offer tailored recommendations.
 
